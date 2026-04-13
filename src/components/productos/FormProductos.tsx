@@ -17,9 +17,9 @@ export default function FormProducto({
   const [form, setForm] = useState({
     codigo: "",
     nombre: "",
-    precio_compra: 0,
-    precio_venta: 0,
-    stock_actual: 0,
+    precio_compra: "" as string | number,
+    precio_venta: "" as string | number,
+    stock_actual: "" as string | number,
   });
   const [mostrarEscaner, setMostrarEscaner] = useState(false);
 
@@ -39,16 +39,19 @@ export default function FormProducto({
     const { name, value } = e.target;
     setForm({
       ...form,
-      [name]:
-        name.includes("precio") || name.includes("stock")
-          ? Number(value)
-          : value,
+      [name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onGuardar(form);
+    onGuardar({
+      codigo: form.codigo,
+      nombre: form.nombre,
+      precio_compra: Number(form.precio_compra) || 0,
+      precio_venta: Number(form.precio_venta) || 0,
+      stock_actual: Number(form.stock_actual) || 0,
+    });
   };
 
   return (
@@ -128,7 +131,7 @@ export default function FormProducto({
                   name="precio_compra"
                   type="number"
                   min="0"
-                  step="1"
+                  step="0.01"
                   value={form.precio_compra}
                   onChange={handleChange}
                   placeholder="Costo al proveedor"
@@ -149,7 +152,7 @@ export default function FormProducto({
                   name="precio_venta"
                   type="number"
                   min="0"
-                  step="1"
+                  step="0.01"
                   value={form.precio_venta}
                   onChange={handleChange}
                   placeholder="Precio al público"
